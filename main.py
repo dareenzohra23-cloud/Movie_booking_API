@@ -128,6 +128,18 @@ def get_movies():
         "total_seats_available": sum(m["seats_available"] for m in movies)
     }
 
+# filters
+
+
+@app.get("/movies/filter")
+def filter_movies(
+    genre: Optional[str] = None,
+    language: Optional[str] = None,
+    max_price: Optional[int] = None,
+    min_seats: Optional[int] = None
+):
+    return filter_movies_logic(movies, genre, language, max_price, min_seats)
+
 
 @app.get("/movies/{movie_id}")
 def get_movie(movie_id: int):
@@ -179,17 +191,6 @@ def create_booking(req: BookingRequest):
 
     return booking
 
-# filters
-
-
-@app.get("/movies/filter")
-def filter_movies(
-    genre: Optional[str] = None,
-    language: Optional[str] = None,
-    max_price: Optional[int] = None,
-    min_seats: Optional[int] = None
-):
-    return filter_movies_logic(movies, genre, language, max_price, min_seats)
 
 # add movie
 
@@ -313,7 +314,7 @@ def release_hold(hold_id: int):
 # search
 
 
-@app.get("/movies/search")
+@app.get("/movie/search")
 def search_movies(keyword: str):
     result = [
         m for m in movies
@@ -330,7 +331,7 @@ def search_movies(keyword: str):
 # sorting
 
 
-@app.get("/movies/sort")
+@app.get("/movie/sort")
 def sort_movies(sort_by: str = "ticket_price"):
     valid = ["ticket_price", "title", "duration_mins", "seats_available"]
 
@@ -342,7 +343,7 @@ def sort_movies(sort_by: str = "ticket_price"):
 # pagination
 
 
-@app.get("/movies/page")
+@app.get("/movie/page")
 def paginate_movies(page: int = 1, limit: int = 3):
     start = (page - 1) * limit
     end = start + limit
@@ -355,7 +356,7 @@ def paginate_movies(page: int = 1, limit: int = 3):
     }
 
 
-@app.get("/movies/browse")
+@app.get("/movie/browse")
 def browse_movies(
     keyword: Optional[str] = None,
     genre: Optional[str] = None,
@@ -379,3 +380,4 @@ def browse_movies(
     end = start + limit
 
     return result[start:end]
+
